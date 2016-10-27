@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.timeZoon.android.MainActivity">
+
+    <TextView
+        android:id="@+id/tvTimeZone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="timeZone"
+        android:textSize="18sp" />
+
+    <info.hoang8f.android.segmented.SegmentedGroup
+        android:id="@+id/timezone_control"
+        style="@style/settings_segmented_control_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        app:border_width="2dp">
+
+        <RadioButton
+            android:id="@+id/button_timezone_eastern"
+            style="@style/MscRadioButtonVertical"
+            android:text="@string/timezone_eastern_title" />
+
+        <RadioButton
+            android:id="@+id/button_timezone_central"
+            style="@style/MscRadioButtonVertical"
+            android:text="@string/timezone_central_title" />
+
+        <RadioButton
+            android:id="@+id/button_timezone_mountain"
+            style="@style/MscRadioButtonVertical"
+            android:text="@string/timezone_mountain_title" />
+
+        <RadioButton
+            android:id="@+id/button_timezone_pacific"
+            style="@style/MscRadioButtonVertical"
+            android:text="@string/timezone_pacific_title" />
+
+        <RadioButton
+            android:id="@+id/button_timezone_alaska"
+            style="@style/MscRadioButtonVertical"
+            android:text="@string/timezone_alaska_title" />
+
+        <RadioButton
+            android:id="@+id/button_timezone_hawaii"
+            style="@style/MscRadioButtonVertical"
+            android:text="@string/timezone_hawaii_title" />
+
+        <RadioButton
+            android:id="@+id/button_timezone_arizona"
+            style="@style/MscRadioButtonVertical"
+            android:text="@string/timezone_arizona_title" />
+
+        <RadioButton
+            android:id="@+id/button_timezone_china"
+            style="@style/MscRadioButtonVertical"
+            android:text="@string/timezone_china_title" />
+    </info.hoang8f.android.segmented.SegmentedGroup>
+</RelativeLayout>

@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">TimeZoneDemo</string>
+
+    <string name="timezone_eastern_title">Eastern</string>
+    <string name="timezone_central_title">Central</string>
+    <string name="timezone_mountain_title">Mountain</string>
+    <string name="timezone_pacific_title">Pacific</string>
+    <string name="timezone_alaska_title">Alaska</string>
+    <string name="timezone_hawaii_title">Hawaii</string>
+    <string name="timezone_arizona_title">Arizona</string>
+    <string name="timezone_china_title">Beijing</string>
+</resources>
