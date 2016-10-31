@@ -1,12 +1,18 @@
 package com.timeZoon.android;
 
+import android.app.AlarmManager;
+import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+
 import java.util.TimeZone;
 
 import info.hoang8f.android.segmented.SegmentedGroup;
@@ -25,9 +31,25 @@ public class MainActivity extends AppCompatActivity {
     RadioButton buttonTimezoneArizona;
     SegmentedGroup timezoneControl;
     TextView mTvTimeZone;
+    ProgressBar proBar ;
+
+    TimeZone mTimezone;
+
+    private final String TIME_ZONE_CHINA = "Asia/Shanghai";
+    private final String TIME_ZONE_ALASKA = "America/Anchorage";
+    private final String TIME_ZONE_ARIZONA = "America/Phoenix";
+    private final String TIME_ZONE_CENTRAL = "America/Chicago";
+    private final String TIME_ZONE_EASTERN = "America/New_York";
+    private final String TIME_ZONE_HAWAII = "Pacific/Honolulu";
+    private final String TIME_ZONE_MOUNTAIN = "America/Denver";
+    private final String TIME_ZONE_PACIFIC = "America/Los_Angeles";
+
+    private String mBeforeTimeidStr;
+
 
     /**
      * Distinguish time zones by short identifiers , default timeZone is Eastern timeZone.
+     *
      * @param savedInstanceState
      */
     @Override
@@ -50,42 +72,43 @@ public class MainActivity extends AppCompatActivity {
 
     private void initData() {
         //根据当前当前标准时间 创建一个 timeZone
-        TimeZone timezone = TimeZone.getDefault();
+        mTimezone = TimeZone.getDefault();
 
-        mTvTimeZone.setText(timezone.getDisplayName(false, TimeZone.SHORT));
+        mTvTimeZone.setText(mTimezone.getDisplayName(false, TimeZone.LONG));
 
-        Log.e(TAG,timezone.getID());
+        Log.e(TAG, mTimezone.getID());
 
-        Log.e(TAG,TimeZone.getTimeZone("Asia/Shanghai").getDisplayName(false,TimeZone.SHORT));
-        Log.e(TAG,TimeZone.getTimeZone("America/Anchorage").getDisplayName(false,TimeZone.SHORT));
-        Log.e(TAG,TimeZone.getTimeZone("America/Phoenix").getDisplayName(false,TimeZone.LONG)+" : "+TimeZone.getTimeZone("US/Arizona").getID());
-        Log.e(TAG,TimeZone.getTimeZone("America/Chicago").getDisplayName(false,TimeZone.SHORT));
-        Log.e(TAG,TimeZone.getTimeZone("America/New_York").getDisplayName(false,TimeZone.SHORT));
-        Log.e(TAG,TimeZone.getTimeZone("Pacific/Honolulu").getDisplayName(false,TimeZone.SHORT));
-        Log.e(TAG,TimeZone.getTimeZone("America/Denver").getDisplayName(false,TimeZone.LONG)+" : "+TimeZone.getTimeZone("US/Mountain").getID());
-        Log.e(TAG,TimeZone.getTimeZone("America/Los_Angeles").getDisplayName(false,TimeZone.SHORT));
+        Log.e(TAG, TimeZone.getTimeZone(TIME_ZONE_CHINA).getDisplayName(false, TimeZone.SHORT) + " : " + TimeZone.getTimeZone(TIME_ZONE_CHINA).getID());
+        Log.e(TAG, TimeZone.getTimeZone(TIME_ZONE_ALASKA).getDisplayName(false, TimeZone.SHORT) + " : " + TimeZone.getTimeZone(TIME_ZONE_ALASKA).getID());
+        Log.e(TAG, TimeZone.getTimeZone(TIME_ZONE_ARIZONA).getDisplayName(false, TimeZone.LONG) + " : " + TimeZone.getTimeZone(TIME_ZONE_ARIZONA).getID());
+        Log.e(TAG, TimeZone.getTimeZone(TIME_ZONE_CENTRAL).getDisplayName(false, TimeZone.SHORT) + " : " + TimeZone.getTimeZone(TIME_ZONE_CENTRAL).getID());
+        Log.e(TAG, TimeZone.getTimeZone(TIME_ZONE_EASTERN).getDisplayName(false, TimeZone.SHORT) + " : " + TimeZone.getTimeZone(TIME_ZONE_EASTERN).getID());
+        Log.e(TAG, TimeZone.getTimeZone(TIME_ZONE_HAWAII).getDisplayName(false, TimeZone.SHORT) + " : " + TimeZone.getTimeZone(TIME_ZONE_HAWAII).getID());
+        Log.e(TAG, TimeZone.getTimeZone(TIME_ZONE_MOUNTAIN).getDisplayName(false, TimeZone.LONG) + " : " + TimeZone.getTimeZone("US/Mountain").getID());
+        Log.e(TAG, TimeZone.getTimeZone(TIME_ZONE_PACIFIC).getDisplayName(false, TimeZone.SHORT) + " : " + TimeZone.getTimeZone(TIME_ZONE_PACIFIC).getID());
 
-        checkTimeZone(timezone.getDisplayName(false, TimeZone.SHORT),timezone.getID());
+        checkTimeZone(mTimezone.getID());
     }
 
-    public void checkTimeZone(String shortTimeZone,String mountainId) {
-        Log.i(TAG,mountainId+"---");
+    public void checkTimeZone(String timeZoneid) {
+
+        mBeforeTimeidStr = timeZoneid;
         String timeZone = getString(R.string.timezone_eastern_title);
-        if (shortTimeZone.equals(TimeZone.getTimeZone("Asia/Shanghai").getDisplayName(false,TimeZone.SHORT))) {
+        if (timeZoneid.equals(TimeZone.getTimeZone("Asia/Shanghai").getID())) {
             timeZone = getString(R.string.timezone_china_title);
-        } else if (shortTimeZone.equals(TimeZone.getTimeZone("America/Anchorage").getDisplayName(false,TimeZone.SHORT)) ) {
+        } else if (timeZoneid.equals(TimeZone.getTimeZone("America/Anchorage").getID())) {
             timeZone = getString(R.string.timezone_alaska_title);
-        } else if (shortTimeZone.equals(TimeZone.getTimeZone("America/Phoenix").getDisplayName(false,TimeZone.SHORT))&&TimeZone.getTimeZone("America/Phoenix").getID().equals(mountainId)) {
+        } else if (timeZoneid.equals(TimeZone.getTimeZone("America/Phoenix").getID())) {
             timeZone = getString(R.string.timezone_arizona_title);
-        } else if (shortTimeZone.equals(TimeZone.getTimeZone("America/Chicago").getDisplayName(false,TimeZone.SHORT))) {
+        } else if (timeZoneid.equals(TimeZone.getTimeZone("America/Chicago").getID())) {
             timeZone = getString(R.string.timezone_central_title);
-        } else if (shortTimeZone.equals(TimeZone.getTimeZone("America/New_York").getDisplayName(false,TimeZone.SHORT))) {
+        } else if (timeZoneid.equals(TimeZone.getTimeZone("America/New_York").getID())) {
             timeZone = getString(R.string.timezone_eastern_title);
-        } else if (shortTimeZone.equals(TimeZone.getTimeZone("Pacific/Honolulu").getDisplayName(false,TimeZone.SHORT))) {
+        } else if (timeZoneid.equals(TimeZone.getTimeZone("Pacific/Honolulu").getID())) {
             timeZone = getString(R.string.timezone_hawaii_title);
-        } else if (shortTimeZone.equals(TimeZone.getTimeZone("America/Denver").getDisplayName(false,TimeZone.SHORT))) {
+        } else if (timeZoneid.equals(TimeZone.getTimeZone("America/Denver").getID())) {
             timeZone = getString(R.string.timezone_mountain_title);
-        } else if (shortTimeZone.equals(TimeZone.getTimeZone("America/Los_Angeles").getDisplayName(false,TimeZone.SHORT))) {
+        } else if (timeZoneid.equals(TimeZone.getTimeZone("America/Los_Angeles").getID())) {
             timeZone = getString(R.string.timezone_pacific_title);
         }
 
@@ -106,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
 
         timezoneControl = (SegmentedGroup) findViewById(R.id.timezone_control);
         mTvTimeZone = (TextView) findViewById(R.id.tvTimeZone);
+        proBar = (ProgressBar) findViewById(R.id.progressBar);
 
     }
 
@@ -115,29 +139,41 @@ public class MainActivity extends AppCompatActivity {
         public void onCheckedChanged(RadioGroup group, int checkedId) {
 
             String timeZone;
+            String changeTimeZoneStr;
 
             if (checkedId == R.id.button_timezone_eastern) {
                 timeZone = getString(R.string.timezone_eastern_title);
+                changeTimeZoneStr = TIME_ZONE_EASTERN;
             } else if (checkedId == R.id.button_timezone_central) {
                 timeZone = getString(R.string.timezone_central_title);
+                changeTimeZoneStr = TIME_ZONE_CENTRAL;
             } else if (checkedId == R.id.button_timezone_mountain) {
                 timeZone = getString(R.string.timezone_mountain_title);
+                changeTimeZoneStr = TIME_ZONE_MOUNTAIN;
             } else if (checkedId == R.id.button_timezone_pacific) {
                 timeZone = getString(R.string.timezone_pacific_title);
+                changeTimeZoneStr = TIME_ZONE_PACIFIC;
             } else if (checkedId == R.id.button_timezone_alaska) {
                 timeZone = getString(R.string.timezone_alaska_title);
+                changeTimeZoneStr = TIME_ZONE_ALASKA;
             } else if (checkedId == R.id.button_timezone_hawaii) {
                 timeZone = getString(R.string.timezone_hawaii_title);
+                changeTimeZoneStr = TIME_ZONE_HAWAII;
             } else if (checkedId == R.id.button_timezone_arizona) {
                 timeZone = getString(R.string.timezone_arizona_title);
-            }  else if (checkedId == R.id.button_timezone_china) {
+                changeTimeZoneStr = TIME_ZONE_ARIZONA;
+            } else if (checkedId == R.id.button_timezone_china) {
                 timeZone = getString(R.string.timezone_china_title);
-            }else {
+                changeTimeZoneStr = TIME_ZONE_CHINA;
+            } else {
                 throw new IllegalStateException("unknown radioButton id for timezone");
             }
 
+            changeSystemTimeZone(changeTimeZoneStr);
+
         }
     };
+
 
     public void onUpdateTimeZone(String timeZone) {
         timezoneControl.setOnCheckedChangeListener(null);
@@ -163,5 +199,69 @@ public class MainActivity extends AppCompatActivity {
 
         timezoneControl.setOnCheckedChangeListener(timeZoneListener);
     }
+
+    private void changeSystemTimeZone(String changeTimeZoneStr) {
+        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        alarm.setTimeZone(changeTimeZoneStr);
+
+        checkSkipNewTimeZone(changeTimeZoneStr);
+    }
+
+    //TODO can use wait dialog ,
+    private void checkSkipNewTimeZone(String timeZone) {
+        timezoneControl.setOnCheckedChangeListener(null);
+        proBar.setVisibility(View.VISIBLE);
+        new CheckTimeZone().execute(timeZone);
+    }
+
+
+    public class CheckTimeZone extends AsyncTask<String, Void, Boolean> {
+        private String timeZoneid;
+        private String timeZone;
+
+        @Override
+        protected Boolean doInBackground(String... strings) {
+            timeZone = strings[0];
+            timeZoneid = TimeZone.getTimeZone(timeZone).getID();
+            int count = 20;
+            boolean isSuccess = false;
+            while (count > 0 && !isSuccess) {
+
+                String timezoneid = TimeZone.getDefault().getID();
+                if (timezoneid != null && timezoneid.equals(timeZoneid)) {
+                    isSuccess = true;
+                }
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+
+                count--;
+            }
+
+            return isSuccess;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            if (result) {
+                mBeforeTimeidStr = timeZoneid;
+                checkTimeZone(timeZoneid);
+                Log.i(TAG, "SUCCESS");
+            } else {
+                checkTimeZone(mBeforeTimeidStr);
+                Log.i(TAG, "FAIl ");
+            }
+            proBar.setVisibility(View.GONE);
+            TimeZone timezone = TimeZone.getDefault();
+            mTvTimeZone.setText(timezone.getDisplayName(false, TimeZone.LONG));
+            timezoneControl.setOnCheckedChangeListener(timeZoneListener);
+        }
+    }
+
 
 }
